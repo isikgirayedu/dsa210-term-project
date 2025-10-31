@@ -1,72 +1,55 @@
-# Turkish Food Price Inflation Analysis (2019-2025)
+Food Price Inflation Analysis in Turkey (2019–2025)
 
-## DSA 210 - Fall 2025 Project Proposal
+**DSA 210 - Introduction to Data Science Term Project
+**Student:** Işık Giray
 
-### Motivation
+Instructor: —
 
-Turkey has experienced significant economic volatility in recent years, with food prices being particularly sensitive to currency fluctuations and inflation. This project aims to analyze food price trends over 2019-2025 to understand inflation patterns and their impact on consumer purchasing power.
+These neurons discharge in a rather uniform manner throughout different phases of locomotion.
+Overview of Project
 
-### Data Sources
+The present project tries to analyze the change of food prices over time in Turkey and the relation of the trends with inflation and change in the exchange rate.
 
-**Primary Data:**
-- **TÜİK (Turkish Statistical Institute):** Official CPI and food price indices
-- **Numbeo:** Crowdsourced food and restaurant price data
+In this project, trends will be explored, relationships between different food categories visualized, and a simple predictive model built for future prices, all using publicly available datasets from TÜİK, Numbeo, and Kaggle.
+---
+Goals
+- Analyze the rate of increases in food prices from 2019–2025.
 
-**Enrichment Data:**
-- USD/TRY and EUR/TRY exchange rates
-- Economic indicators (GDP, unemployment, interest rates)
-- Agricultural production statistics (if available)
+- Compare various product categories: bread, milk, meat, fruits, etc.
 
-### Data Collection Plan
+- Analyze the relations between food prices, inflation rate, and changes in currency.
+- Apply regression-based machine learning to predict future food prices.
+---
+Planned Sources for Data
+Source Description
 
-1. Download TÜİK data via web scraping or official sources
-2. Extract Numbeo historical data for Turkish cities
-3. Collect exchange rate data from TCMB
-4. Integrate and validate data from multiple sources
-5. Handle missing values and create derived features
+|--------|--------------|
 
-### Planned Analysis
+| **TÜİK (Turkish Statistical Institute)** | Monthly food price index |
 
-**Exploratory Analysis:**
-- Time series visualization of food inflation trends
-- Comparison across food categories (bread, dairy, meat, produce)
-- Correlation analysis with exchange rates and economic indicators
-- Seasonal pattern detection
+| **Numbeo** | Average food prices per city |
+| **Kaggle Dataset** | Global inflation and currency data for enrichment
+All data sources will be open and combined into one unified dataset for analysis.
+---
+Planned Methods
 
-**Hypothesis Testing:**
-- Currency depreciation vs food price correlation
-- COVID-19 period impact on food prices
-- Category-wise inflation differences
+- Cleaning and integrating data with **pandas
 
-**Machine Learning:**
-- Time series forecasting models (ARIMA, Prophet, or similar)
-- Price prediction based on economic indicators
-- Model evaluation and comparison
+- Exploratory Data Analysis (EDA)
+- Statistical analysis: correlation, t-tests
+- Visualization with **matplotlib** and **seaborn**
+- Regression-based ML for price prediction using **scikit-learn**
+-
+## Timeline
 
-### Tools & Technologies
-```
-Python libraries:
-- pandas, numpy (data manipulation)
-- matplotlib, seaborn, plotly (visualization)
-- scipy, statsmodels (statistical analysis)
-- scikit-learn (machine learning)
-```
+| Date | Task |
 
-### Expected Outcomes
-
-- Interactive visualizations showing inflation trends
-- Statistical analysis of price patterns
-- Predictive models for future price trends
-- Insights on economic factors affecting food prices
-
-### Timeline
-
-- **Nov 28:** Data collection and exploratory analysis complete
-- **Jan 2:** Machine learning models implemented
-- **Jan 9:** Final submission with full documentation
-
-### Limitations
-
-- Data availability and quality from public sources
-- Difficulty capturing all economic variables
-- Numbeo data is crowdsourced and may have biases
+|------|------|
+| **31 Oct** | Submit project proposal (this README) |
+| **28 Nov** | Collect data and do EDA + hypothesis tests |
+| **02 Jan** | Apply ML methods |
+| **09 Jan** | Final project submission
+---
+Requirements
+The rest of the implementation remains unchanged.
+python>=3.10 pandas numpy matplotlib seaborn scikit-learn requests

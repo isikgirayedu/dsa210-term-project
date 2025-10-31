@@ -1,8 +1,7 @@
 # Food Price Inflation Analysis in Turkey (2019–2025)
 
 **DSA 210 - Introduction to Data Science Term Project**  
-**Student:** Işık Giray  
-**Instructor:** —  
+**Student:** Işık Giray Önal 34088
 
 ---
 

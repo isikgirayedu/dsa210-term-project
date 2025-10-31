@@ -53,7 +53,7 @@ All data sources will be open and combined into one unified dataset for analysis
 
 | Date | Task |
 |------|------|
-| **31 Oct** | Submit project proposal (this README) |
+| **31 Oct** | Submit project proposal |
 | **28 Nov** | Collect data and do EDA + hypothesis tests |
 | **02 Jan** | Apply ML methods |
 | **09 Jan** | Final project submission |

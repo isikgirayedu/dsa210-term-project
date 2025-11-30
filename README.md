@@ -1,72 +1,90 @@
 # Food Price Inflation Analysis in Turkey (2019–2025)
 
-**DSA 210 - Introduction to Data Science Term Project**  
+**DSA 210 - Introduction to Data Science Term Project**
 **Student:** Işık Giray Önal 34088
 
 ---
 
-These neurons discharge in a rather uniform manner throughout different phases of locomotion.
+## 📌 Overview
+
+This project analyzes the change in food prices over time in Turkey and explores the relationship between these trends, the inflation rate, and exchange rate fluctuations (USD/TRY).
+
+The primary goal is to visualize the correlation between currency devaluation and food inflation, and eventually build a regression model to predict future prices based on economic indicators.
 
 ---
 
-## Overview of Project
+## 📂 Project Structure
 
-The present project tries to analyze the change of food prices over time in Turkey and the relation of the trends with inflation and change in the exchange rate.
+The repository is organized as follows:
 
-In this project, trends will be explored, relationships between different food categories visualized, and a simple predictive model built for future prices, all using publicly available datasets from TÜİK, Numbeo, and Kaggle.
-
----
-
-## Goals
-
-- Analyze the rate of increases in food prices from 2019–2025.  
-- Compare various product categories: bread, milk, meat, fruits, etc.  
-- Analyze the relations between food prices, inflation rate, and changes in currency.  
-- Apply regression-based machine learning to predict future food prices.  
+    dsa210-term-project/
+    ├── data/
+    │   └── turkey_food_inflation_dataset.csv   # Processed dataset (Currently Synthetic/Test Data)
+    ├── code/
+    │   └── analysis.ipynb                      # Source code for Data Generation, EDA, and Hypothesis Testing
+    ├── images/                                 # Folder for saved visualization exports
+    ├── README.md                               # Project documentation
+    └── requirements.txt                        # List of Python dependencies
 
 ---
 
-## Planned Sources for Data
+## 📊 Data Source & Processing (Nov 28 Milestone Update)
 
-| Source | Description |
-|--------|--------------|
-| **TÜİK (Turkish Statistical Institute)** | Monthly food price index |
-| **Numbeo** | Average food prices per city |
-| **Kaggle Dataset** | Global inflation and currency data for enrichment |
+For the current milestone (Nov 28), the project pipeline has been successfully established using a **synthetic dataset** designed to mimic real-world economic trends in Turkey.
 
-All data sources will be open and combined into one unified dataset for analysis.
-
----
-
-## Planned Methods
-
-- Cleaning and integrating data with **pandas**  
-- Exploratory Data Analysis (EDA)  
-- Statistical analysis: correlation, t-tests  
-- Visualization with **matplotlib** and **seaborn**  
-- Regression-based ML for price prediction using **scikit-learn**
+- **Current Data:** A generated dataset covering the period from **Jan 2019 to Jan 2025**.
+- **Variables:**
+  - `Date`: Monthly timestamps.
+  - `USD_TRY`: Simulated exchange rate data exhibiting an upward trend with market fluctuations.
+  - `Food_Price_Index`: Simulated food price index strongly correlated with currency changes and inflation noise.
+- **Next Steps:** This synthetic data serves as a placeholder to validate the analysis code. It will be replaced by real scraped data from **TÜİK (Turkish Statistical Institute)** and **TCMB (Central Bank of Turkey)** for the final submission in January.
 
 ---
 
-## Timeline
+## 🔍 Exploratory Data Analysis (EDA) Findings
 
-| Date | Task |
-|------|------|
-| **28 Nov** | Collect data and do EDA + hypothesis tests |
-| **02 Jan** | Apply ML methods |
-| **09 Jan** | Final project submission |
+The initial analysis performed in `analysis.ipynb` yielded the following insights:
+
+1.  **Trend Analysis:** Both the USD/TRY exchange rate and the Food Price Index show a consistent and steep upward trend over the last 6 years.
+2.  **Volatility:** Food prices exhibit higher volatility compared to the exchange rate, suggesting that factors beyond currency (e.g., supply chain issues, seasonality) also play a role.
+3.  **Visual Correlation:** Time-series plots confirm a parallel movement between currency devaluation and the increase in food prices.
 
 ---
 
-## Requirements
+## 🧪 Hypothesis Testing
 
-The rest of the implementation remains unchanged.
+We statistically tested the relationship between currency devaluation and food prices.
 
-```txt
-python>=3.10  
-pandas  
-numpy  
-matplotlib  
-seaborn  
-scikit-learn  
-requests
+- **Hypothesis ($H_1$):** There is a significant positive correlation between the USD/TRY exchange rate and the Food Price Index.
+- **Null Hypothesis ($H_0$):** There is no correlation ($r=0$).
+- **Test Used:** Pearson Correlation Coefficient.
+- **Result:**
+  - **P-value:** $< 0.05$
+  - **Conclusion:** The null hypothesis is **rejected**. The analysis confirms a statistically significant and strong positive correlation between dollar rates and food inflation.
+
+---
+
+## 📅 Timeline & Progress
+
+| Date       | Task                                              | Status           |
+| ---------- | ------------------------------------------------- | ---------------- |
+| **28 Nov** | Collect data, conduct EDA, and Hypothesis Testing | ✅ **Completed** |
+| **02 Jan** | Apply Machine Learning (Regression Models)        | ⏳ Pending       |
+| **09 Jan** | Final Project Submission                          | ⏳ Pending       |
+
+---
+
+## 🛠️ Requirements
+
+To reproduce the analysis, install the required dependencies:
+
+    pip install -r requirements.txt
+
+**Libraries:**
+
+- `pandas`: Data manipulation and analysis
+- `numpy`: Numerical operations
+- `matplotlib`: Data visualization
+- `seaborn`: Advanced statistical data visualization
+- `scipy`: Scientific computing and hypothesis testing
+- `scikit-learn`: (Planned for future regression models)

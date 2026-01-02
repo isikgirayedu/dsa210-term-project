@@ -41,6 +41,29 @@ For the current milestone (Nov 28), the project pipeline has been successfully e
 
 ---
 
+## 02 Jan Milestone Update — Machine Learning ✅
+
+The machine learning milestone has been completed using the synthetic monthly dataset in `data/`.
+A time-respecting train/test split was applied and several regression models were trained to predict
+`Food_Price_Index` using `USD_TRY`, time features, and lag/rolling features.
+
+**Baselines**
+
+- Naive baseline (last-month value)
+
+**Models**
+
+- Linear Regression, Ridge, Lasso
+- Random Forest Regressor
+- HistGradientBoostingRegressor
+
+**Outputs**
+
+- Notebook: `code/machine_learning.ipynb`
+- Figures exported to `images/` (actual vs predicted, residuals, feature importance/coefs)
+
+---
+
 ## 🔍 Exploratory Data Analysis (EDA) Findings
 
 The initial analysis performed in `analysis.ipynb` yielded the following insights:
@@ -69,7 +92,7 @@ We statistically tested the relationship between currency devaluation and food p
 | Date       | Task                                              | Status           |
 | ---------- | ------------------------------------------------- | ---------------- |
 | **28 Nov** | Collect data, conduct EDA, and Hypothesis Testing | ✅ **Completed** |
-| **02 Jan** | Apply Machine Learning (Regression Models)        | ⏳ Pending       |
+| **02 Jan** | Apply Machine Learning (Regression Models)        | ✅ **Completed** |
 | **09 Jan** | Final Project Submission                          | ⏳ Pending       |
 
 ---

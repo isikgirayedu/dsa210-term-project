@@ -1,4 +1,6 @@
 import os
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -13,15 +15,35 @@ from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.ensemble import RandomForestRegressor, HistGradientBoostingRegressor
 
 RANDOM_STATE = 42
+BASE_DIR = Path(__file__).resolve().parents[1]
+DEFAULT_DATA_PATH = BASE_DIR / "data" / "food_inflation_data.csv"
+PRICE_COLS = ["Bread_Price", "Milk_Price", "Meat_Price"]
+INDEX_COLS = ["Bread_Index", "Milk_Index", "Meat_Index"]
+
+
+def add_food_price_index(df: pd.DataFrame) -> pd.DataFrame:
+    if "Food_Price_Index" in df.columns:
+        return df
+    if all(col in df.columns for col in INDEX_COLS):
+        df["Food_Price_Index"] = df[INDEX_COLS].mean(axis=1)
+        return df
+    if all(col in df.columns for col in PRICE_COLS):
+        base_row = df.iloc[0]
+        for col in PRICE_COLS:
+            df[f"{col}_Index"] = df[col] / base_row[col] * 100
+        index_cols = [f"{col}_Index" for col in PRICE_COLS]
+        df["Food_Price_Index"] = df[index_cols].mean(axis=1)
+        return df
+    raise ValueError("Food_Price_Index missing and required price/index columns not found.")
 
 def metrics(y_true, y_pred):
     mae = mean_absolute_error(y_true, y_pred)
-    rmse = mean_squared_error(y_true, y_pred, squared=False)
+    rmse = np.sqrt(mean_squared_error(y_true, y_pred))
     mape = np.mean(np.abs((y_true - y_pred) / y_true)) * 100
     r2 = r2_score(y_true, y_pred)
     return {"MAE": mae, "RMSE": rmse, "MAPE_%": mape, "R2": r2}
 
-def main(data_path="../data/turkey_food_inflation_dataset.csv"):
+def main(data_path=DEFAULT_DATA_PATH):
     df = pd.read_csv(data_path)
     date_col_candidates = [c for c in df.columns if c.lower() in {"date","month","timestamp","time"}]
     if not date_col_candidates:
@@ -29,8 +51,13 @@ def main(data_path="../data/turkey_food_inflation_dataset.csv"):
     date_col = date_col_candidates[0]
     df[date_col] = pd.to_datetime(df[date_col])
     df = df.sort_values(date_col).reset_index(drop=True)
+    df = add_food_price_index(df)
 
-    target_candidates = [c for c in df.columns if c.lower() in {"food_price_index","foodpriceindex","food_index","food_index_value"}]
+    target_candidates = [
+        c
+        for c in df.columns
+        if c.lower() in {"food_price_index", "foodpriceindex", "food_index", "food_index_value"}
+    ]
     if not target_candidates:
         raise ValueError("Target column not found.")
     target_col = target_candidates[0]

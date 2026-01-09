@@ -1,113 +1,143 @@
-# Food Price Inflation Analysis in Turkey (2019–2025)
+# Food Price Inflation Analysis in Turkey (2019-2024)
 
 **DSA 210 - Introduction to Data Science Term Project**
 **Student:** Işık Giray Önal 34088
 
 ---
 
-## 📌 Overview
+## Overview
 
-This project analyzes the change in food prices over time in Turkey and explores the relationship between these trends, the inflation rate, and exchange rate fluctuations (USD/TRY).
-
-The primary goal is to visualize the correlation between currency devaluation and food inflation, and eventually build a regression model to predict future prices based on economic indicators.
-
----
-
-## 📂 Project Structure
-
-The repository is organized as follows:
-
-    dsa210-term-project/
-    ├── data/
-    │   └── turkey_food_inflation_dataset.csv   # Processed dataset (Currently Synthetic/Test Data)
-    ├── code/
-    │   └── analysis.ipynb                      # Source code for Data Generation, EDA, and Hypothesis Testing
-    ├── images/                                 # Folder for saved visualization exports
-    ├── README.md                               # Project documentation
-    └── requirements.txt                        # List of Python dependencies
+This project analyzes monthly food price changes in Turkey and the relationship between these trends
+and USD/TRY exchange rate movements. A composite Food Price Index (base=100 at 2019-01) is computed
+from bread, milk, and meat prices, then used for exploratory analysis, hypothesis testing, and
+time-series regression.
 
 ---
 
-## 📊 Data Source & Processing (Nov 28 Milestone Update)
+## Data Source and Scope
 
-For the current milestone (Nov 28), the project pipeline has been successfully established using a **synthetic dataset** designed to mimic real-world economic trends in Turkey.
-
-- **Current Data:** A generated dataset covering the period from **Jan 2019 to Jan 2025**.
-- **Variables:**
-  - `Date`: Monthly timestamps.
-  - `USD_TRY`: Simulated exchange rate data exhibiting an upward trend with market fluctuations.
-  - `Food_Price_Index`: Simulated food price index strongly correlated with currency changes and inflation noise.
-- **Next Steps:** This synthetic data serves as a placeholder to validate the analysis code. It will be replaced by real scraped data from **TÜİK (Turkish Statistical Institute)** and **TCMB (Central Bank of Turkey)** for the final submission in January.
-
----
-
-## 02 Jan Milestone Update — Machine Learning ✅
-
-The machine learning milestone has been completed using the synthetic monthly dataset in `data/`.
-A time-respecting train/test split was applied and several regression models were trained to predict
-`Food_Price_Index` using `USD_TRY`, time features, and lag/rolling features.
-
-**Baselines**
-
-- Naive baseline (last-month value)
-
-**Models**
-
-- Linear Regression, Ridge, Lasso
-- Random Forest Regressor
-- HistGradientBoostingRegressor
-
-**Outputs**
-
-- Notebook: `code/machine_learning.ipynb`
-- Figures exported to `images/` (actual vs predicted, residuals, feature importance/coefs)
+- **Dataset:** `data/food_inflation_data.csv`
+- **Coverage:** 2019-01 to 2024-12 (monthly)
+- **Columns:** `Date`, `USD_TRY`, and either `Bread_Price`/`Milk_Price`/`Meat_Price` or
+  `Bread_Index`/`Milk_Index`/`Meat_Index` (HICP, 2015=100).
+- **Derived:** `Food_Price_Index` is the mean of item-level indices (computed from prices or taken
+  directly from index series).
+- **Note:** The current dataset is generated from public sources (EVDS USD/TRY + FRED HICP).
+  If EVDS access fails, use the script below with `--usd-source fred` and cite FRED for USD/TRY.
 
 ---
 
-## 🔍 Exploratory Data Analysis (EDA) Findings
+## Methods
 
-The initial analysis performed in `analysis.ipynb` yielded the following insights:
-
-1.  **Trend Analysis:** Both the USD/TRY exchange rate and the Food Price Index show a consistent and steep upward trend over the last 6 years.
-2.  **Volatility:** Food prices exhibit higher volatility compared to the exchange rate, suggesting that factors beyond currency (e.g., supply chain issues, seasonality) also play a role.
-3.  **Visual Correlation:** Time-series plots confirm a parallel movement between currency devaluation and the increase in food prices.
-
----
-
-## 🧪 Hypothesis Testing
-
-We statistically tested the relationship between currency devaluation and food prices.
-
-- **Hypothesis ($H_1$):** There is a significant positive correlation between the USD/TRY exchange rate and the Food Price Index.
-- **Null Hypothesis ($H_0$):** There is no correlation ($r=0$).
-- **Test Used:** Pearson Correlation Coefficient.
-- **Result:**
-  - **P-value:** $< 0.05$
-  - **Conclusion:** The null hypothesis is **rejected**. The analysis confirms a statistically significant and strong positive correlation between dollar rates and food inflation.
+- **EDA:** Time-series plots, scatter plots, summary stats.
+- **Hypothesis test:** Pearson correlation between `USD_TRY` and `Food_Price_Index`.
+  - **H0:** r = 0 (no correlation)
+  - **H1:** r > 0 (positive correlation)
+- **Machine learning:** Time-aware cross-validation with lag and rolling features.
+  - Models: Linear Regression, Ridge, Lasso, Random Forest
+  - Metrics: MAE, RMSE, R2
 
 ---
 
-## 📅 Timeline & Progress
+## Results (From Current Dataset)
 
-| Date       | Task                                              | Status           |
-| ---------- | ------------------------------------------------- | ---------------- |
-| **28 Nov** | Collect data, conduct EDA, and Hypothesis Testing | ✅ **Completed** |
-| **02 Jan** | Apply Machine Learning (Regression Models)        | ✅ **Completed** |
-| **09 Jan** | Final Project Submission                          | ⏳ Pending       |
+- **Food Price Index:** 153.13 -> 1320.04 (~8.62x increase)
+- **USD/TRY:** 5.37 -> 34.90 (~6.50x increase)
+- **Correlation:** r = 0.9891, p = 5.26e-60 (reject H0)
+- **Best model (CV mean):** Ridge
+  - MAE = 37.47, RMSE = 45.15, R2 = -0.025
 
 ---
 
-## 🛠️ Requirements
+## Project Structure
 
-To reproduce the analysis, install the required dependencies:
+```
+.
+├── data/
+│   ├── food_inflation_data.csv
+│   ├── metrics.csv
+│   └── predictions.csv
+├── code/
+│   ├── analysis.py
+│   ├── fetch_data.py
+│   ├── train_models.py
+│   ├── ml_pipeline.py
+│   └── machine_learning.ipynb
+├── images/
+│   ├── Figure_1.png
+│   ├── Figure_2.png
+│   └── prediction_plot.png
+├── README.md
+└── requirements.txt
+```
 
-    pip install -r requirements.txt
+---
 
-**Libraries:**
+## Reproducibility
 
-- `pandas`: Data manipulation and analysis
-- `numpy`: Numerical operations
-- `matplotlib`: Data visualization
-- `seaborn`: Advanced statistical data visualization
-- `scipy`: Scientific computing and hypothesis testing
-- `scikit-learn`: (Planned for future regression models)
+```bash
+pip install -r requirements.txt
+python3 code/fetch_data.py --out data/food_inflation_data.csv  # optional (requires API keys)
+python3 code/analysis.py
+python3 code/train_models.py
+```
+
+Optional: open `code/machine_learning.ipynb` to reproduce the full ML workflow and figures.
+
+---
+
+## Public Data Retrieval (Optional)
+
+This script downloads USD/TRY and HICP food indices for Turkey and writes
+`data/food_inflation_data.csv` with `Date`, `USD_TRY`, `Bread_Index`, `Milk_Index`, `Meat_Index`.
+
+```bash
+export EVDS_API_KEY=YOUR_EVDS_KEY
+export FRED_API_KEY=YOUR_FRED_KEY
+python3 code/fetch_data.py --out data/food_inflation_data.csv
+```
+
+If EVDS access fails, you can pull USD/TRY from FRED instead:
+
+```bash
+export FRED_API_KEY=YOUR_FRED_KEY
+python3 code/fetch_data.py --usd-source fred --out data/food_inflation_data.csv
+```
+
+Sources and access notes:
+
+- **TCMB EVDS (USD/TRY):** series `TP.DK.USD.A.YTL`, API key required.
+  Example: `https://evds2.tcmb.gov.tr/service/evds/series=TP.DK.USD.A.YTL&startDate=01-01-2019&endDate=31-12-2024&type=json&key=YOUR_API_KEY`
+- **FRED (USD/TRY, fallback):** `CCUSMA02TRM618N` (monthly average, Turkish lira per USD).
+- **FRED (Eurostat HICP):**
+  - Bread & Cereals: `CP0111TRM086NEST`
+  - Meat: `CP0112TRM086NEST`
+  - Milk, Cheese, Eggs: `CP0114TRM086NEST`
+
+Citations:
+
+- **TCMB EVDS**, Central Bank of the Republic of Turkey, Electronic Data Delivery System (EVDS),
+  USD/TRY Exchange Rate Series, https://evds2.tcmb.gov.tr (accessed YYYY-MM-DD).
+- **Eurostat HICP via FRED**, Federal Reserve Bank of St. Louis, HICP Turkey food series
+  (CP0111TRM086NEST, CP0112TRM086NEST, CP0114TRM086NEST), https://fred.stlouisfed.org (accessed YYYY-MM-DD).
+
+---
+
+## Limitations and Future Work
+
+- Public HICP series are indices, not item-level price observations.
+- Limited food items and a short time range.
+- Add official sources (TUIK/TCMB) and more macro indicators (CPI, wage index, energy costs).
+- Compare additional time-series models (SARIMAX, Prophet) and validate on newer data.
+
+---
+
+## AI Assistance Disclosure
+
+- **Prompt:** "kanka bugün 9 ocak projeyi bitirsene"
+- **Output:** Updated analysis scripts, aligned ML pipeline to the current dataset, regenerated
+  figures/metrics, and revised this README for final submission.
+- **Prompt:** "proje dökümanında bişey demiyorsa keyfine göre"
+- **Output:** Added public-data retrieval guidance, a fetch script, and updated documentation.
+- **Prompt:** "EVDS and FRED API keys provided"
+- **Output:** Added EVDS header support, monthly aggregation, and refreshed results/figures.

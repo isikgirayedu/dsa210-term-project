@@ -5,11 +5,16 @@
 
 ---
 
-## Overview
+## Motivation and Questions
 
-This project studies monthly food price movements in Turkey and their relationship with USD/TRY
-exchange rates. A composite Food Price Index is constructed from bread, milk, and meat series and
-used for EDA, hypothesis testing, and time-series regression.
+Food price inflation directly affects household budgets, while USD/TRY movements reflect broader
+macroeconomic pressures. This project focuses on how food prices evolve alongside currency changes
+and whether a simple time-series regression can capture that relationship.
+
+Key questions:
+- How strongly do food price indices co-move with USD/TRY?
+- Which food group (bread, milk, meat) shows the fastest growth?
+- Can lag/rolling features improve short-term prediction of the food price index?
 
 ---
 
@@ -28,29 +33,44 @@ used for EDA, hypothesis testing, and time-series regression.
 - `Food_Price_Index`: mean of item-level indices. If price columns are used, indices are computed
   with the first month as base.
 
-**Primary sources**
-- **TCMB EVDS (USD/TRY):** `TP.DK.USD.A.YTL` (monthly, API key required)
+**Sources**
+- **TCMB EVDS (USD/TRY):** `TP.DK.USD.A.YTL` (monthly, API key required; key sent in headers)
 - **Eurostat HICP via FRED (food indices):**
   - Bread & Cereals: `CP0111TRM086NEST`
   - Meat: `CP0112TRM086NEST`
   - Milk, Cheese, Eggs: `CP0114TRM086NEST`
-
-**Fallback for USD/TRY**
-- **FRED (USD/TRY):** `CCUSMA02TRM618N` (monthly average)
+- **USD/TRY fallback (FRED):** `CCUSMA02TRM618N` (monthly average)
 
 **Notes**
 - HICP series are indices, not item-level price observations.
-- If EVDS access fails, you can use the FRED USD/TRY fallback.
+- If EVDS access fails, use the FRED USD/TRY fallback.
 
 ---
 
-## Methods
+## Technical Approach
 
-- **EDA:** Time-series plots, scatter plots, summary statistics
-- **Hypothesis test:** Pearson correlation between `USD_TRY` and `Food_Price_Index`
-- **Machine learning:** Time-aware cross-validation with lag and rolling features
-  - Models: Linear Regression, Ridge, Lasso, Random Forest
-  - Metrics: MAE, RMSE, R2
+- **Data prep:** parse dates, align monthly frequency, build item indices, compute composite index.
+- **EDA:** trend inspection, item-level comparison, volatility checks via MoM change.
+- **Hypothesis test:** Pearson correlation between `USD_TRY` and `Food_Price_Index`.
+- **Modeling:** time-aware CV with lag/rolling features; compare linear models vs random forest.
+
+---
+
+## EDA and Visualizations
+
+To guide the reader from motivation to evidence, the EDA section focuses on co-movement,
+item-level divergence, and short-term volatility.
+
+- `images/Figure_1.png`: Food Price Index vs USD/TRY (co-movement over time).
+- `images/Figure_2.png`: Scatter of USD/TRY vs Food Price Index (relationship strength).
+- `images/Figure_3.png`: Bread/Milk/Meat indices vs composite index (item divergence).
+- `images/Figure_4.png`: Month-over-month % change for USD/TRY and Food Price Index (volatility).
+- `images/prediction_plot.png`: Out-of-fold model predictions vs actuals.
+
+EDA highlights from the current dataset:
+- Meat index grows fastest (~10.3x), followed by bread (~8.0x) and milk (~7.7x).
+- The composite food index and USD/TRY move together with a strong positive association.
+- MoM changes show clustered volatility rather than a smooth linear trend.
 
 ---
 
@@ -78,7 +98,7 @@ Optional: open `code/machine_learning.ipynb` to reproduce the full ML workflow a
 
 ## Public Data Retrieval (Optional)
 
-The script below pulls USD/TRY from EVDS and food indices from FRED, then writes
+This script pulls USD/TRY from EVDS and food indices from FRED, then writes
 `data/food_inflation_data.csv`.
 
 ```bash
@@ -120,6 +140,8 @@ python3 code/fetch_data.py --usd-source fred --out data/food_inflation_data.csv
 ├── images/
 │   ├── Figure_1.png
 │   ├── Figure_2.png
+│   ├── Figure_3.png
+│   ├── Figure_4.png
 │   └── prediction_plot.png
 ├── README.md
 └── requirements.txt
@@ -138,10 +160,10 @@ python3 code/fetch_data.py --usd-source fred --out data/food_inflation_data.csv
 
 ## AI Assistance Disclosure
 
-- **Prompt:** "kanka bugün 9 ocak projeyi bitirsene"
+- **Prompt:** "kanka bugun 9 ocak projeyi bitirsene"
 - **Output:** Updated analysis scripts, aligned ML pipeline to the current dataset, regenerated
   figures/metrics, and revised this README for final submission.
-- **Prompt:** "proje dökümanında bişey demiyorsa keyfine göre"
+- **Prompt:** "proje dokumaninda bisey demiyorsa keyfine gore"
 - **Output:** Added public-data retrieval guidance, a fetch script, and updated documentation.
 - **Prompt:** "EVDS and FRED API keys provided"
 - **Output:** Added EVDS header support, monthly aggregation, and refreshed results/figures.

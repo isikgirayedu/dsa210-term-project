@@ -33,6 +33,9 @@ def main() -> None:
     df["Date"] = pd.to_datetime(df["Date"])
     df = df.sort_values("Date").reset_index(drop=True)
     df = add_food_price_index(df)
+    index_cols = [col for col in INDEX_COLS if col in df.columns]
+    df["Food_Price_Index_MoM"] = df["Food_Price_Index"].pct_change() * 100
+    df["USD_TRY_MoM"] = df["USD_TRY"].pct_change() * 100
 
     IMG_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -62,6 +65,64 @@ def main() -> None:
     plt.ylabel("Food Price Index")
     plt.tight_layout()
     plt.savefig(IMG_DIR / "Figure_2.png", dpi=200)
+    plt.close()
+
+    if index_cols:
+        label_map = {
+            "Bread_Index": "Bread Index",
+            "Milk_Index": "Milk Index",
+            "Meat_Index": "Meat Index",
+        }
+        color_map = {
+            "Bread_Index": "#1f77b4",
+            "Milk_Index": "#ff7f0e",
+            "Meat_Index": "#2ca02c",
+        }
+        plt.figure(figsize=(12, 6))
+        for col in index_cols:
+            sns.lineplot(
+                x="Date",
+                y=col,
+                data=df,
+                label=label_map.get(col, col),
+                color=color_map.get(col),
+            )
+        sns.lineplot(
+            x="Date",
+            y="Food_Price_Index",
+            data=df,
+            label="Food Price Index",
+            color="black",
+            linestyle="--",
+        )
+        plt.title("Item Indices vs Composite Food Price Index")
+        plt.xlabel("Date")
+        plt.ylabel("Index (2015=100)")
+        plt.tight_layout()
+        plt.savefig(IMG_DIR / "Figure_3.png", dpi=200)
+        plt.close()
+
+    plt.figure(figsize=(12, 6))
+    sns.lineplot(
+        x="Date",
+        y="Food_Price_Index_MoM",
+        data=df,
+        label="Food Price Index MoM (%)",
+        color="orange",
+    )
+    sns.lineplot(
+        x="Date",
+        y="USD_TRY_MoM",
+        data=df,
+        label="USD/TRY MoM (%)",
+        color="green",
+    )
+    plt.axhline(0, color="gray", linestyle="--", linewidth=1)
+    plt.title("Month-over-Month Change (%)")
+    plt.xlabel("Date")
+    plt.ylabel("Percent Change")
+    plt.tight_layout()
+    plt.savefig(IMG_DIR / "Figure_4.png", dpi=200)
     plt.close()
 
     r_value, p_value = stats.pearsonr(df["USD_TRY"], df["Food_Price_Index"])

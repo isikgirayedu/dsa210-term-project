@@ -179,9 +179,10 @@ def build_deck():
         "Introduction",
         [
             "Analyze monthly food price indices (bread, milk, meat) and USD/TRY from 2019-2024.",
-            "Construct a composite Food Price Index to summarize food inflation dynamics.",
-            "Use EDA and correlation tests to quantify the currency-food link.",
-            "Evaluate basic time-series regression models for short-term prediction.",
+            "Build a composite Food Price Index (mean of item indices) to summarize overall inflation.",
+            "Use EDA to examine trends, growth, and volatility across the period.",
+            "Apply correlation + hypothesis testing to quantify the currency-food link.",
+            "Evaluate time-aware regression models for short-term prediction.",
         ],
         image_path=STOCK_IMAGES["market"],
     )
@@ -190,9 +191,10 @@ def build_deck():
         prs,
         "Motivation",
         [
-            "Food inflation directly affects household purchasing power.",
+            "Food inflation directly affects household purchasing power and welfare.",
             "USD/TRY depreciation raises import and input costs for food producers.",
-            "Understanding co-movement helps explain macro-level inflation pressures.",
+            "Currency pass-through can amplify broader inflation expectations.",
+            "Quantifying co-movement helps policy and business planning.",
         ],
         image_path=STOCK_IMAGES["currency"],
     )
@@ -202,6 +204,7 @@ def build_deck():
         "Research Questions",
         [
             "How strongly do food price indices co-move with USD/TRY?",
+            "Is the correlation statistically significant (H0: no linear relationship)?",
             "Which food group (bread, milk, meat) shows the fastest growth?",
             "Do lag and rolling features improve short-term prediction?",
         ],
@@ -214,7 +217,8 @@ def build_deck():
         [
             "USD/TRY: TCMB EVDS monthly series (TP.DK.USD.A.YTL).",
             "Food indices: Eurostat HICP via FRED (2015=100).",
-            "Align monthly dates, compute composite Food Price Index.",
+            "Align monthly dates and keep the overlapping 2019-2024 range.",
+            "Compute composite Food Price Index and MoM change series.",
             "Engineer lag and rolling features for modeling.",
         ],
         image_path=STOCK_IMAGES["market"],
@@ -228,8 +232,10 @@ def build_deck():
         IMG_DIR / "Figure_1.png",
         [
             "Both series trend upward over 2019-2024.",
+            "USD/TRY and food index rise together with similar turning points.",
             "Strong co-movement suggests currency pass-through.",
             "Composite index smooths item-level noise.",
+            "Visual pattern motivates formal correlation testing.",
         ],
     )
 
@@ -238,9 +244,11 @@ def build_deck():
         "Analysis (cont.)",
         IMG_DIR / "Figure_2.png",
         [
+            "H0: no linear correlation between USD/TRY and Food Price Index (r = 0).",
+            "H1: positive linear correlation (r > 0).",
             "Pearson r = 0.9891 (p = 5.26e-60).",
-            "Relationship is strongly positive and significant.",
-            "Supports H1: currency and food inflation co-move.",
+            "At alpha = 0.05, p << alpha, so reject H0.",
+            "Conclusion: correlation is strong and statistically significant.",
         ],
     )
 
@@ -249,8 +257,9 @@ def build_deck():
         "Analysis (cont.)",
         IMG_DIR / "Figure_3.png",
         [
-            "Meat index grows fastest (~10.3x).",
+            "Meat index grows fastest (~10.3x) and shows larger swings.",
             "Bread (~8.0x) and milk (~7.7x) rise steadily.",
+            "Different growth rates suggest heterogeneous food inflation.",
             "Composite tracks the shared upward trend.",
         ],
     )
@@ -260,10 +269,24 @@ def build_deck():
         "Analysis (cont.)",
         IMG_DIR / "Figure_4.png",
         [
-            "MoM changes show clustered volatility.",
+            "MoM changes show clustered volatility rather than a smooth trend.",
             "Currency shocks align with larger food jumps.",
             "Volatility increases in later years.",
+            "Large swings highlight forecasting difficulty.",
         ],
+    )
+
+    add_text_slide(
+        prs,
+        "Machine Learning Workflow",
+        [
+            "Create features: month/year, USD/TRY, lags (1, 2, 3, 6, 12), and rolling means.",
+            "Split data in time order to avoid leakage.",
+            "Scale features and train regression models.",
+            "Evaluate with MAE/RMSE/R2 and pick the lowest RMSE.",
+            "Generate 1-month-ahead predictions for the Food Price Index.",
+        ],
+        image_path=STOCK_IMAGES["data"],
     )
 
     add_image_text_slide(
@@ -271,7 +294,8 @@ def build_deck():
         "Machine Learning Applications",
         IMG_DIR / "prediction_plot.png",
         [
-            "Time-aware CV with lag and rolling features.",
+            "Time-aware CV with lag/rolling features and calendar variables.",
+            "Models compared: Linear, Ridge, Lasso, Random Forest.",
             "Best model: Ridge (RMSE 45.15, R2 -0.025).",
             "Linear models underfit; richer features needed.",
         ],
@@ -282,6 +306,7 @@ def build_deck():
         "Conclusion",
         [
             "Food prices and USD/TRY move closely together.",
+            "Correlation is statistically significant and economically large.",
             "Meat prices show the fastest index growth.",
             "Short-term regression remains challenging without richer signals.",
         ],
